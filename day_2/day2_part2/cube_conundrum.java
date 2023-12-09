@@ -10,28 +10,18 @@ class cube_conundrum {
         );
         Scanner sc = new Scanner(inputFile);
         Integer game_idx = 1;
-        ArrayList<Integer> valid_game = new ArrayList<Integer>();
+        // ArrayList<Integer> valid_game = new ArrayList<Integer>();
+
+        Integer res=0;
 
         while(sc.hasNextLine()) {
             String input_game = sc.nextLine();
             Integer pos = 5;
             // skip_game_init(pos, input_game) : Integer => current_pos
             pos = skip_game_initial(pos, input_game);
-            // read_rgb(color, input_game) : Boolean => valid
-            boolean valid = read_rgb(pos, input_game);
-
-            if (valid) {
-                valid_game.add(game_idx);
-            }
+            // read_rgb(color, input_game) : Integer => combination
+            res += read_rgb(pos, input_game);
             game_idx++;
-        }
-
-        System.out.println(valid_game);
-
-        Integer res = 0;
-
-        for (int i=0; i<valid_game.size(); i++) {
-            res += valid_game.get(i);
         }
 
         System.out.println(res);
@@ -47,9 +37,14 @@ class cube_conundrum {
 
     }
 
-    public static boolean read_rgb(Integer pos_rgb, String input_game) {
+    public static Integer read_rgb(Integer pos_rgb, String input_game) {
         // Character[] rgb = {'r', 'g', 'b'};
         boolean not_found_sc = false;
+
+        Integer red_minimum = 0;
+        Integer blue_minimum = 0;
+        Integer green_minimum = 0;
+        
 
         for (int color_t=0; !not_found_sc; color_t++) {
             Integer red = 0;
@@ -85,14 +80,25 @@ class cube_conundrum {
             }
             System.out.println("finalize round " + color_t + ": " + red + " " + green + " " + blue);
             
-            if (red > 12 || blue > 14 || green > 13) {
-                return false;
+            // if (red > 12 || blue > 14 || green > 13) {
+            //     return false;
+            // }
+
+            if (red > red_minimum) {
+                red_minimum = red;
             }
+            if (green > green_minimum) {
+                green_minimum = green;
+            }
+            if (blue > blue_minimum) {
+                blue_minimum = blue;
+            }
+
             pos_rgb++;
 
         }
 
-        return true;
+        return red_minimum * green_minimum * blue_minimum;
     }
 
     public static Integer read_num_color(Integer pos, String numeric, String input_game) {
